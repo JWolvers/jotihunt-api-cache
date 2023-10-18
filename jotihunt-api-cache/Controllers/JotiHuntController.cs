@@ -7,12 +7,15 @@ namespace jotihunt_api_cache.Controllers
     [ApiController]
     public class JotiHuntController : ControllerBase
     {
+        private HttpRateLimiter SubscriptionsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/subscriptions", TimeSpan.FromSeconds(15));
+        private HttpRateLimiter AreasRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/areas", TimeSpan.FromSeconds(15));
+        private HttpRateLimiter ArticlesRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/articles", TimeSpan.FromSeconds(15));
+
         [HttpGet(nameof(Subscriptions))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ContentResult> Subscriptions()
         {
-            HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://jotihunt.nl/api/2.0/subscriptions");
+            var response = await SubscriptionsRateLimiter.GetAsync();
             return new ContentResult()
             {
                  StatusCode = (int)response.StatusCode,
@@ -25,8 +28,7 @@ namespace jotihunt_api_cache.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ContentResult> Areas()
         {
-            HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://jotihunt.nl/api/2.0/areas");
+            var response = await AreasRateLimiter.GetAsync();
             return new ContentResult()
             {
                 StatusCode = (int)response.StatusCode,
@@ -39,8 +41,7 @@ namespace jotihunt_api_cache.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ContentResult> Articles()
         {
-            HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://jotihunt.nl/api/2.0/articles");
+            var response = await ArticlesRateLimiter.GetAsync();
             return new ContentResult()
             {
                 StatusCode = (int)response.StatusCode,
