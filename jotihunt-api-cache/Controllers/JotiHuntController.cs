@@ -7,9 +7,9 @@ namespace jotihunt_api_cache.Controllers
     [ApiController]
     public class JotiHuntController : ControllerBase
     {
-        private HttpRateLimiter SubscriptionsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/subscriptions", TimeSpan.FromSeconds(15));
-        private HttpRateLimiter AreasRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/areas", TimeSpan.FromSeconds(15));
-        private HttpRateLimiter ArticlesRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/articles", TimeSpan.FromSeconds(15));
+        private static HttpRateLimiter SubscriptionsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/subscriptions", TimeSpan.FromSeconds(15));
+        private static HttpRateLimiter AreasRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/areas", TimeSpan.FromSeconds(15));
+        private static HttpRateLimiter ArticlesRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/articles", TimeSpan.FromSeconds(15));
 
         [HttpGet(nameof(Subscriptions))]
         [ProducesResponseType(StatusCodes.Status200OK)]

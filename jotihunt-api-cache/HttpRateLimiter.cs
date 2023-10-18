@@ -26,13 +26,14 @@
                     {
                         var response = await HttpClient.GetAsync(EndPoint);
 
+                        LastFetch = DateTime.UtcNow;
+
                         if (response.StatusCode == System.Net.HttpStatusCode.OK)
                             CachedResponse = response;
                     }
                 }
                 finally
                 {
-                    LastFetch = DateTime.UtcNow;
                     Semaphore.Release();
                 }
             }
