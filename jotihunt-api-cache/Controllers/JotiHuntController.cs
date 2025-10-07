@@ -7,9 +7,10 @@ namespace jotihunt_api_cache.Controllers
     [ApiController]
     public class JotiHuntController : ControllerBase
     {
-        private static HttpRateLimiter SubscriptionsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/subscriptions", TimeSpan.FromSeconds(15));
-        private static HttpRateLimiter AreasRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/areas", TimeSpan.FromSeconds(15));
-        private static HttpRateLimiter ArticlesRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/articles", TimeSpan.FromSeconds(15));
+        private static HttpRateLimiter SubscriptionsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/subscriptions", TimeSpan.FromSeconds(5));
+        private static HttpRateLimiter AreasRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/areas", TimeSpan.FromSeconds(5));
+        private static HttpRateLimiter ArticlesRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/articles", TimeSpan.FromSeconds(5));
+        private static HttpRateLimiter PhotoAssignmentsRateLimiter { get; } = new HttpRateLimiter("https://jotihunt.nl/api/2.0/photoAssignments", TimeSpan.FromSeconds(5));
 
         [HttpGet(nameof(Subscriptions))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,6 +43,19 @@ namespace jotihunt_api_cache.Controllers
         public async Task<ContentResult> Articles()
         {
             var response = await ArticlesRateLimiter.GetAsync();
+            return new ContentResult()
+            {
+                StatusCode = (int)response.StatusCode,
+                Content = await response.Content.ReadAsStringAsync(),
+                ContentType = response?.Content?.Headers?.ContentType?.ToString()
+            };
+        }
+
+        [HttpGet(nameof(PhotoAssignments))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ContentResult> PhotoAssignments()
+        {
+            var response = await PhotoAssignmentsRateLimiter.GetAsync();
             return new ContentResult()
             {
                 StatusCode = (int)response.StatusCode,
